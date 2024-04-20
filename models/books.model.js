@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const bookSchema = new mongoose.Schema(
   {
-    titl: {
+    title: {
       type: String,
       required: true,
     },
