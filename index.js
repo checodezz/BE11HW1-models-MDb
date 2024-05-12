@@ -51,9 +51,35 @@ app.post("/books", async (req, res) => {
       res.status(201).json({ message: "book added successfully." , book : book});
     } 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Failed to add book." });
   }
 });
+
+
+//3. Create an API to get all the books in the database as response. Make sure to do error handling.
+
+async function allBooks(){
+  try {
+    const books = await Book.find();
+    return books
+  } catch(error){
+    throw error
+  }
+}
+
+app.get("/books", async (req,res) => {
+  try {
+    const books = await allBooks();
+    if(books.length != 0){
+      res.status(200).json({message : "All books", books : books})
+    } else {
+      res.status(404).json({error : "No books found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch books"})
+  }
+})
 
 const PORT = 3000;
 app.listen(PORT, () => {
