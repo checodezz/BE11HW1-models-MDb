@@ -81,6 +81,78 @@ app.get("/books", async (req,res) => {
   }
 })
 
+//4. Create an API to get a book's detail by its title. Make sure to do error handling.
+
+async function bookByTitle(title){
+  try {
+    const book = await Book.findOne({title : title});
+    return book;
+  } catch(error){
+    throw error
+  }
+}
+
+app.get("/books/:title",  async (req, res) => {
+  try{
+    const book = await bookByTitle(req.params.title);
+    if(book){
+      res.status(200).json({book : book})
+    } else {
+      res.status(404).json({error : "Book not found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch book"})
+  }
+})
+
+//5. Create an API to get details of all the books by an author. Make sure to do error handling.
+
+async function bookByAuthor(author){
+  try {
+    const book = await Book.find({author : author});
+    return book;
+  } catch(error){
+    throw error
+  }
+}
+
+app.get("/books/author/:authorName", async (req, res) => {
+  try {
+    const book = await bookByAuthor(req.params.authorName);
+    if(book){
+      res.json(book)
+    } else {
+      res.status(404).json({error : "Book not found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch books."})
+  }
+})
+
+//6. Create an API to get all the books which are of "Business" genre.
+
+async function booksByGenre(bookGenre){
+  try {
+    const books = await Book.find({genre : bookGenre})
+    return books;
+  } catch(error){
+    throw error
+  }
+}
+
+app.get("/books/genre/:genreName", async (req, res) => {
+  try {
+    const books = await booksByGenre(req.params.genreName);
+    if(books.length > 0){
+      res.json(books);
+    } else {
+      res.status(404).json({error : "Books not found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch books."})
+  }
+})
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`App is listening at port ${PORT}`);
