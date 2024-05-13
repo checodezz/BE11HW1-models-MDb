@@ -105,6 +105,30 @@ app.get("/books/:title",  async (req, res) => {
   }
 })
 
+//5. Create an API to get details of all the books by an author. Make sure to do error handling.
+
+async function bookByAuthor(author){
+  try {
+    const book = await Book.findOne({author : author});
+    return book;
+  } catch(error){
+    throw error
+  }
+}
+
+app.get("/books/author/:authorName", async (req, res) => {
+  try {
+    const book = await bookByAuthor(req.params.authorName);
+    if(book){
+      res.json(book)
+    } else {
+      res.status(404).json({error : "Book not found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch books."})
+  }
+})
+
 
 
 
