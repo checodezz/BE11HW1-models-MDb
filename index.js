@@ -81,6 +81,33 @@ app.get("/books", async (req,res) => {
   }
 })
 
+//4. Create an API to get a book's detail by its title. Make sure to do error handling.
+
+async function bookByTitle(title){
+  try {
+    const book = await Book.findOne({title : title});
+    return book;
+  } catch(error){
+    throw error
+  }
+}
+
+app.get("/books/:title",  async (req, res) => {
+  try{
+    const book = await bookByTitle(req.params.title);
+    if(book){
+      res.status(200).json({book : book})
+    } else {
+      res.status(404).json({error : "Book not found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch book"})
+  }
+})
+
+
+
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`App is listening at port ${PORT}`);
