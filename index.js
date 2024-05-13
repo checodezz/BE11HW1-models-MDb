@@ -109,7 +109,7 @@ app.get("/books/:title",  async (req, res) => {
 
 async function bookByAuthor(author){
   try {
-    const book = await Book.findOne({author : author});
+    const book = await Book.find({author : author});
     return book;
   } catch(error){
     throw error
@@ -129,8 +129,29 @@ app.get("/books/author/:authorName", async (req, res) => {
   }
 })
 
+//6. Create an API to get all the books which are of "Business" genre.
 
+async function booksByGenre(bookGenre){
+  try {
+    const books = await Book.find({genre : bookGenre})
+    return books;
+  } catch(error){
+    throw error
+  }
+}
 
+app.get("/books/genre/:genreName", async (req, res) => {
+  try {
+    const books = await booksByGenre(req.params.genreName);
+    if(books.length > 0){
+      res.json(books);
+    } else {
+      res.status(404).json({error : "Books not found."})
+    }
+  } catch(error){
+    res.status(500).json({error : "Failed to fetch books."})
+  }
+})
 
 const PORT = 3000;
 app.listen(PORT, () => {
